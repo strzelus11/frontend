@@ -1,38 +1,90 @@
-.App {
-  text-align: center;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&family=Raleway:wght@300;500;700&display=swap");
+
+* {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+html,
+body {
+	font-family: "Poppins", sans-serif;
+	background-color: #e0e3e6;
+	color: #333;
+	width: 100vw;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+:root {
+	--color-main: #f68657;
+	--color-text: #383a3f;
+	--color-dark: #1f2124;
+	--color-gray: #677;
+	--color-bg: #f3f6f9;
+	--color-light: #acb4bd;
+	--color-lighter: #f9f9f9;
+	--color-white: #fff;
+	--color-border: #e0e3e6;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+.dark {
+	--color-main: #f68657;
+	--color-text: #d6d1d1;
+	--color-dark: #f5f6f7;
+	--color-gray: #999;
+	--color-bg: #1f2124;
+	--color-lighter: #292a2c;
+	--color-white: #2e3235;
+	--color-border: #252629;
 }
 
-.App-link {
-  color: #61dafb;
+.button {
+	background-color: var(--color-main);
+	color: white;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.backdrop {
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 100%;
+	width: 100%;
+	background: #000000e1;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.modal {
+	width: clamp(50%, 700px, 90%);
+	height: min(70%, 400px);
+
+	margin: auto;
+	padding: 2rem;
+	border-radius: 12px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.list-item {
+	display: flex;
+	align-items: center;
+	margin-bottom: 8px;
+}
+
+.checkmark {
+	width: 16px;
+	height: 16px;
+	background-image: url("images/check.png");
+	background-size: contain;
+	background-repeat: no-repeat;
+	margin-right: 8px;
+}
+
+.body-overflow-hidden {
+	overflow: hidden;
 }
