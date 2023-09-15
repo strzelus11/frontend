@@ -13,13 +13,16 @@
 html,
 body {
 	font-family: "Poppins", sans-serif;
-	background-color: #e0e3e6;
+	background: radial-gradient(circle at 50% 50%, #fed0bc 0%, #e1beff 100%);
 	color: #333;
 	width: 100vw;
+	max-width: 100%;
+	overflow-x: hidden;
 }
 
 :root {
 	--color-main: #f68657;
+	--color-secondary: #ae50ff;
 	--color-text: #383a3f;
 	--color-dark: #1f2124;
 	--color-gray: #677;
@@ -32,6 +35,7 @@ body {
 
 .dark {
 	--color-main: #f68657;
+	--color-secondary: #ae50ff;
 	--color-text: #d6d1d1;
 	--color-dark: #f5f6f7;
 	--color-gray: #999;
@@ -48,9 +52,10 @@ body {
 
 .backdrop {
 	position: absolute;
+	z-index: 11;
 	top: 0;
 	left: 0;
-	height: 100%;
+	height: 105%;
 	width: 100%;
 	background: #000000e1;
 	display: flex;
@@ -59,9 +64,10 @@ body {
 }
 
 .modal {
+	position: fixed;
+	transform: translate(-50%, -50%);
 	width: clamp(50%, 700px, 90%);
-	height: min(70%, 400px);
-
+	height: min(70%, 500px);
 	margin: auto;
 	padding: 2rem;
 	border-radius: 12px;
@@ -76,15 +82,90 @@ body {
 	margin-bottom: 8px;
 }
 
-.checkmark {
-	width: 16px;
-	height: 16px;
-	background-image: url("images/check.png");
-	background-size: contain;
-	background-repeat: no-repeat;
-	margin-right: 8px;
-}
-
 .body-overflow-hidden {
 	overflow: hidden;
+}
+
+.cta {
+	background: linear-gradient(90deg, #ae50ff 0%, #f68657 100%);
+}
+
+.header {
+	background: linear-gradient(90deg, #c480ff 0%, #fba27c 100%);
+}
+
+.background {
+	background: radial-gradient(circle at 50% 50%, #fed0bc 0%, #e1beff 100%);
+}
+
+.tiles {
+	background: linear-gradient(319deg, #fdb190 0%, #cd93ff 100%);
+}
+
+.text-gradient {
+	background: linear-gradient(227deg, #ff824f 0%, #a540ff 100%);
+	-webkit-background-clip: text;
+	background-clip: text;
+	color: transparent;
+}
+
+@media (max-width: 767px) {
+	.modal {
+		height: min(70%, 500px);
+	}
+}
+
+@variants {
+	.hover\:scale-110:hover {
+		transform: scale(1.1);
+	}
+
+	.hover\:text-[#ffffff]:hover {
+		color: #fff;
+	}
+}
+
+input::placeholder {
+	color: #ffffff;
+}
+
+input[type="date"] {
+	appearance: none;
+	-webkit-appearance: none;
+	border: 2px solid #a540ff;
+	color: white;
+	border-radius: 10px;
+	padding: 15px;
+	font-size: 14px;
+	outline: none;
+	width: 250px;
+	box-shadow: 0 0 20px 1px #a540ff;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+	color: #fff;
+}
+
+input[type="date"]::placeholder {
+	color: #fff;
+}
+
+input[type="date"].neutral:focus {
+	border-color: white;
+	box-shadow: 0 0 10px 1px #a540ff;
+}
+
+input[type="date"].invalid-date:focus {
+	border-color: red;
+	box-shadow: 0 0 10px 1px red;
+}
+
+input[type="date"].valid-date:focus {
+	border-color: rgb(0, 192, 0);
+	box-shadow: 0 0 10px 1px rgb(0, 192, 0);
+}
+
+.fade-out {
+	opacity: 0;
+	transition: opacity 0.5s ease-in-out;
 }

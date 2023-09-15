@@ -1,22 +1,41 @@
 import React, { useState } from "react";
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { fadeIn } from "../utils/motion";
+import { fadeIn, slideIn } from "../utils/motion";
+import { useAuth } from "../utils/AuthContext";
 
 const links = [
 	{ name: "Home", href: "" },
 	{ name: "Calendar", href: "calendar" },
-	{ name: "About", href: "about" },
-	{ name: "Contact", href: "contact" },
+	{ name: "Stats", href: "stats" },
 ];
 
 export default function Header() {
 	const location = useLocation();
+    const navigate = useNavigate();
+    const auth = useAuth();
 
 	const [menu, setMenu] = useState(false);
+
+	const handleLogout = async () => {
+		try {
+			await fetch("api/logout", {
+				method: "POST",
+				credentials: "include",
+				headers: {
+					"Content-Type": "application/json",
+				},
+			});
+
+			auth.logout(); // Use auth.logout to update the authentication state
+			navigate("/login");
+		} catch (error) {
+			console.error("Logout failed:", error);
+		}
+	};
 
 	return (
 		<AnimatePresence>
@@ -24,9 +43,9 @@ export default function Header() {
 				variants={fadeIn("down", "spring", 0.5, 1)}
 				initial="hidden"
 				whileInView="show"
-				className="flex justify-between items-center pb-[20px] px-6"
+				className="header flex justify-between items-center py-[10px] px-6 rounded-b-xl shadow-xl shadow-[#ca8ffe]"
 			>
-				<div className="w-20 h-20">
+				<div className=" w-[50px] h-[50px] md:w-20 md:h-20">
 					<motion.img
 						src={process.env.PUBLIC_URL + "/logo.png"}
 						alt=""
@@ -36,67 +55,88 @@ export default function Header() {
 				<div className="flex justify-between gap-[100px] xl:gap-[200px] mr-[100px] lg:mr-[200px]">
 					<div className="hidden md:flex justify-center flex-1 gap-[50px]">
 						{links.map((link, index) => (
+							<NavLink
+								to={`/${link.href}`}
+								className={`text-[16px] md:text-[20px] hover:scale-110 transition-transform duration-300 hover:text-[#fff] ${
+									location.pathname === `/${link.href}` ? "text-[#fff]" : ""
+								}`}
+								key={index}
+							>
+								{link.name}
+							</NavLink>
+						))}
+					</div>
+
+					{!auth.user ? (
+						<div className="hidden md:flex justify-center flex-1 gap-[50px]">
+							<NavLink
+								to="/login"
+								className={`text-[16px] md:text-[20px] hover:scale-110 transition-transform duration-300 hover:text-[#fff] ${
+									location.pathname === "/login" ? "text-[#fff]" : ""
+								}`}
+							>
+								Log In
+							</NavLink>
+							<NavLink
+								to="/register"
+								className={`text-[16px] md:text-[20px] hover:scale-110 transition-transform duration-300 hover:text-[#fff] ${
+									location.pathname === "/register" ? "text-[#fff]" : ""
+								}`}
+							>
+								Register
+							</NavLink>
+						</div>
+					) : (
+						<div className="hidden md:flex justify-center flex-1 gap-[50px]">
+							<motion.p
+								whileHover={{ scale: 1.1, color: "#fff" }}
+								whileTap={{ scale: 0.9 }}
+								className={`text-[16px] md:text-[20px] cursor-pointer ${
+									location.pathname === "/logout" && "text-[#fff]"
+								}`}
+								onClick={handleLogout}
+							>
+								Log Out
+							</motion.p>
+						</div>
+					)}
+				</div>
+				<div
+					className="flex md:hidden cursor-pointer mr-10"
+					onClick={() => setMenu(true)}
+				>
+					<MenuIcon />
+				</div>
+				<motion.div
+					className="fixed md:hidden top-0 right-0 h-full header w-60 z-5 rounded-l-xl"
+					variants={slideIn("right", "spring", 0, 1)}
+					initial={menu ? "" : "hidden"}
+					whileInView={menu ? "show" : ""}
+				>
+					<div
+						className="absolute top-5 left-5 cursor-pointer"
+						onClick={() => setMenu(false)}
+					>
+						<CloseIcon />
+					</div>
+					<div className="flex flex-col ml-7 mt-[100px] justify-center flex-1 gap-[50px]">
+						{links.map((link, index) => (
 							<NavLink to={`/${link.href}`}>
 								<motion.p
-									whileHover={{ scale: 1.1, color: "#f68657" }}
+									variants={slideIn("right", "spring", 0.05 * index, 1)}
+									initial="hidden"
+									whileInView="show"
+									whileHover={{ scale: 1.1, color: "#fff" }}
 									whileTap={{ scale: 0.9 }}
+									onClick={() => setMenu(false)}
 									key={index}
-									className={`${
-										location.pathname === `/${link.href}`
-											? "text-[#f68657]"
-											: ""
-									}`}
 								>
 									{link.name}
 								</motion.p>
 							</NavLink>
 						))}
 					</div>
-					<div className="hidden md:flex justify-center flex-1 gap-[50px]">
-						<NavLink to="/login">
-							<motion.p
-								whileHover={{ scale: 1.1, color: "#f68657" }}
-								whileTap={{ scale: 0.9 }}
-								className={`${
-									location.pathname === "/login" && "text-[#f68657]"
-								}`}
-							>
-								Log In
-							</motion.p>
-						</NavLink>
-						<NavLink to="/register">
-							<motion.p
-								whileHover={{ scale: 1.1, color: "#f68657" }}
-								whileTap={{ scale: 0.9 }}
-								className={`${
-									location.pathname === "/register" && "text-[#f68657]"
-								}`}
-							>
-								Register
-							</motion.p>
-						</NavLink>
-					</div>
-				</div>
-				<div
-					className="flex md:hidden cursor-pointer"
-					onClick={() => setMenu(true)}
-				>
-					<MenuIcon fontSize="large" />
-				</div>
-				<div
-					className={`fixed md:hidden top-0 right-0 h-full bg-white w-60 z-5 transform transition-transform ${
-						menu ? "translate-x-0" : "translate-x-full"
-					}`}
-				>
-					<div className="absolute top-5 left-5" onClick={()=> setMenu(false)}>
-						<CloseIcon />
-					</div>
-					<ul className="p-4 mt-[100px]">
-						<li className="mb-2">Item 1</li>
-						<li className="mb-2">Item 2</li>
-						<li className="mb-2">Item 3</li>
-					</ul>
-				</div>
+				</motion.div>
 			</motion.div>
 		</AnimatePresence>
 	);

@@ -6,11 +6,53 @@ import Backdrop from "./Backdrop";
 import CloseIcon from "@mui/icons-material/Close";
 import BookmarkAddedIcon from "@mui/icons-material/BookmarkAdded";
 
-const AddModal = ({ handleClose, day }) => {
-	const [tasks, setTasks] = useState([]);
-	const [newTask, setNewTask] = useState("");
+const months = [
+	"January",
+	"February",
+	"March",
+	"April",
+	"May",
+	"June",
+	"July",
+	"August",
+	"September",
+	"October",
+	"November",
+	"December",
+];
+
+const AddModal = ({ handleClose, day, year }) => {
+    const [task, setTask] = useState({
+        title: "",
+        content: ""
+    });
 
 	const [alert, setAlert] = useState(false);
+
+	const addTask = async (newTask) => {
+		try {
+			const formattedDate = `${year}-${String(day.month + 1).padStart(
+				2,
+				"0"
+			)}-${String(day.date).padStart(2, "0")}`;
+			const response = await fetch(`api/task/create/${formattedDate}`, {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify(newTask),
+			});
+
+			if (response.ok) {
+                setTask({ title: "", content: "" }); // Clear input fields
+                setAlert(true);
+			} else {
+				console.error("Failed to add task");
+			}
+		} catch (error) {
+			console.error("Error:", error);
+		}
+	};
 
 	useEffect(() => {
 		if (alert) {
@@ -22,11 +64,12 @@ const AddModal = ({ handleClose, day }) => {
 	}, [alert]);
 
 	const handleAddTask = (e) => {
-		if (e.key === "Enter" && newTask.trim() !== "") {
-			const updatedTasks = [newTask, ...tasks.slice(0, 9)];
-			setTasks(updatedTasks);
-			setNewTask("");
-			setAlert(true);
+		if (
+			e.key === "Enter" &&
+			task.title.trim() !== "" &&
+			task.content.trim() !== ""
+		) {
+            addTask(task);
 		}
 	};
 
@@ -34,31 +77,50 @@ const AddModal = ({ handleClose, day }) => {
 		<Backdrop onClick={handleClose}>
 			<motion.div
 				onClick={(e) => e.stopPropagation()}
-				className="modal bg-[#e0e3e6]"
+				className="modal header text-white"
 				variants={dropIn}
 				initial="hidden"
 				animate="visible"
 				exit="exit"
 			>
-				<CloseIcon className="absolute top-8 left-8 cursor-pointer" onClick={handleClose} />
+				<CloseIcon
+					className="absolute top-8 left-8 cursor-pointer"
+					onClick={handleClose}
+				/>
 
-				<p className="text-[30px] text-[#f68657] mb-8">
-					{day.day}, {day.month} {day.date}
-				</p>
-				<div className="flex flex-col justify-between items-center h-full">
-					<div className="flex flex-col items-center">
-						<label htmlFor="task" className="text-[20px] mb-10">
-							Add a new task
-						</label>
-						<input
-							type="text"
-							name="task"
-							placeholder="Type and click Enter"
-							value={newTask}
-							onChange={(e) => setNewTask(e.target.value)}
-							onKeyDown={handleAddTask}
-							className="rounded-xl p-2 w-[300px] border-none outline-[#f68657]"
-						/>
+				<div className="sm:mt-0 my-[50px] text-center">
+					<p className="sm:text-[30px] text-[20px] font-semibold mb-8">
+						{day.day}, {months[day.month]} {day.date}
+					</p>
+					<div className="flex flex-col justify-between items-center h-full">
+						<div className="flex flex-col items-center gap-5">
+							<label htmlFor="task" className="text-[20px]">
+								Add a new task
+							</label>
+							<div className="cta rounded-3xl flex  flex-col justify-center items-center gap-7 p-10 w-[400px] h-[200px] shadow-xl shadow-[#a540ff]">
+								<input
+									type="text"
+									name="title"
+                                    placeholder="Type title"
+                                    autoFocus
+									value={task.title}
+									onChange={(e) => setTask({ ...task, title: e.target.value })}
+									onKeyDown={handleAddTask}
+									className="rounded-xl p-2 w-[300px] border-2 outline-none border-white text-white header"
+								/>
+								<input
+									type="text"
+									name="content"
+									placeholder="Type content and press Enter"
+									value={task.content}
+									onChange={(e) =>
+										setTask({ ...task, content: e.target.value })
+									}
+									onKeyDown={handleAddTask}
+									className="rounded-xl p-2 w-[300px] border-2 outline-none border-white text-white header"
+								/>
+							</div>
+						</div>
 					</div>
 					<AnimatePresence>
 						{alert && (
@@ -68,11 +130,11 @@ const AddModal = ({ handleClose, day }) => {
 									opacity: 0,
 								}}
 								animate={{
-									y: 0,
+									y: -50,
 									opacity: 1,
 									transition: {
 										type: "spring",
-										delay: 0.5,
+										delay: 0.2,
 										duration: 1,
 										ease: "easeOut",
 									},
