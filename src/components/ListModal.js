@@ -57,21 +57,21 @@ const TaskEdit = ({ taskToEdit, handleClose }) => {
 	};
 
 	return (
-		<div className="absolute top-0 left-0 h-[100%] rounded-xl w-[100%] bg-[#0000006f] flex items-center justify-center">
+		<div className="absolute top-0 left-0 h-[100%] rounded-xl w-[100%] bg-[#0000003f] flex items-center justify-center">
 			<motion.div
 				onClick={(e) => e.stopPropagation()}
 				variants={dropIn}
 				initial="hidden"
 				animate="visible"
 				exit="exit"
-				className="cta rounded-3xl flex justify-center p-10 w-[600px] h-[400px] shadow-xl shadow-[#a540ff]"
+				className="cta rounded-3xl flex justify-center p-10 w-[300px] sm:w-[600px] sm:h-[400px] sm:shadow-xl shadow-[#a540ff]"
 			>
 				<CloseIcon
-					className="absolute top-8 left-8 cursor-pointer"
+					className="absolute top-5 left-5 sm:top-8 sm:left-8 cursor-pointer"
 					onClick={handleClose}
 				/>
 				<div className="flex flex-col items-center gap-5">
-					<h1 className="sm:text-[30px] text-[20px] text-white text-center font-semibold mb-5">
+					<h1 className="sm:text-[30px] text-[18px] text-white text-center font-semibold mb-2 sm:mb-5">
 						Edit view
 					</h1>
 					<div className="flex flex-col gap-1">
@@ -89,7 +89,7 @@ const TaskEdit = ({ taskToEdit, handleClose }) => {
 							whileInView="show"
 							type="text"
 							name="title"
-							className="rounded-xl p-2 w-[300px] border-2 outline-none border-white text-white header"
+							className="rounded-xl p-2 w-[220px] sm:w-[300px] border-2 outline-none border-white text-white header"
 							value={title}
 							onChange={(e) => setTitle(e.target.value)}
 						/>
@@ -109,7 +109,7 @@ const TaskEdit = ({ taskToEdit, handleClose }) => {
 							whileInView="show"
 							type="text"
 							name="content"
-							className="rounded-xl p-2 w-[300px] border-2 outline-none border-white text-white header"
+							className="rounded-xl p-2 w-[220px] sm:w-[300px] border-2 outline-none border-white text-white header"
 							value={content}
 							onChange={(e) => setContent(e.target.value)}
 						/>
@@ -131,7 +131,7 @@ const TaskEdit = ({ taskToEdit, handleClose }) => {
 	);
 };
 
-const ListModal = ({ handleClose, day, year }) => {
+const ListModal = ({ handleClose, day, year, handleOpen }) => {
 	const [tasks, setTasks] = useState([]);
 	const [taskStatus, setTaskStatus] = useState([]);
 	const [edited, setEdited] = useState(false);
@@ -232,56 +232,94 @@ const ListModal = ({ handleClose, day, year }) => {
 		<Backdrop onClick={handleClose}>
 			<motion.div
 				onClick={(e) => e.stopPropagation()}
-				className="fixed border-none rounded-xl p-10 w-[700px] h-[650px] header text-white"
+				className="fixed border-none rounded-xl p-10 w-[300px] h-[500px] sm:w-[700px] sm:h-[650px] header text-white"
 				variants={dropIn}
 				initial="hidden"
 				animate="visible"
 				exit="exit"
 			>
 				<CloseIcon
-					className="absolute top-8 left-8 cursor-pointer"
+					className="absolute top-5 left-5 sm:top-8 sm:left-8 cursor-pointer"
 					onClick={handleClose}
 				/>
-				<div className="sm:mt-0 my-[50px]">
-					<p className="sm:text-[30px] text-[20px] text-center font-semibold mb-8">
+				<div className="mt-5 my-[50px]">
+					<p className="sm:text-[30px] text-[18px] text-center font-semibold mb-8">
 						{day.day}, {months[day.month]} {day.date}
 					</p>
 					<div className="flex flex-col justify-between items-center h-full">
 						<div className="flex flex-col items-center">
-							<label htmlFor="task" className="text-[20px] mb-10">
+							<label htmlFor="task" className="sm:text-[20px] mb-5 sm:mb-10">
 								All tasks
 							</label>
-							<div className="cta rounded-3xl flex justify-center p-10 w-[500px] h-[400px] shadow-xl shadow-[#a540ff]">
-								<ul className="flex flex-col items-end gap-1">
+							<div className="cta rounded-3xl flex justify-center p-10 w-[250px] h-[200px] sm:w-[500px] sm:h-[400px] shadow-xl shadow-[#a540ff] overflow-y-auto">
+								{tasks == "" && (
+									<div className="flex flex-col justify-center items-center">
+										<p className="sm:text-[30px] text-[20px] text-center font-semibold mb-8">
+											No tasks for this day
+										</p>
+										<motion.button
+											onClick={() => {
+												handleOpen();
+												handleClose();
+											}}
+											variants={slideIn("up", "spring", 0, 2)}
+											initial="hidden"
+											whileInView="show"
+											whileHover={{ scale: 1.1 }}
+											whileTap={{ scale: 0.9 }}
+											className="w-[180px] sm:w-[200px] mt-3 rounded-xl bg-inherit border-2 border-white py-2 px-7"
+										>
+											Add new task
+										</motion.button>
+									</div>
+								)}
+								<ul className="flex flex-col items-end gap-3 sm:gap-5">
 									{tasks.map((task, index) => (
 										<>
 											<li
 												key={index}
 												className={task.fadeOut ? "fade-out" : ""}
 											>
-												<div className="flex items-center justify-between gap-4">
-													<span>{task.title}</span>
-													<span>
-														<button onClick={() => handleEditTask(task)}>
-															<EditIcon />
-														</button>
-													</span>
-													<span>
-														<button onClick={() => handleToggleTask(index)}>
-															{taskStatus[index] ? (
-																<CheckBoxIcon />
-															) : (
-																<CheckBoxOutlineBlankIcon />
-															)}
-														</button>
-													</span>
-													<span>
-														<button
-															onClick={() => handleDeleteTask(index, task)}
-														>
-															<DeleteIcon />
-														</button>
-													</span>
+												<div className="flex items-center justify-center gap-2 sm:gap-4">
+													<motion.div
+														whileHover={{ scale: 1.1 }}
+														className="rounded-xl p-1 sm:p-2 w-24 sm:w-32 border-2 header text-white outline-none text-center truncate"
+													>
+														{task.title}
+													</motion.div>
+													<div className="border-2 rounded-xl py-1 px-2 sm:py-2 sm:px-4 flex justify-center gap-2 sm:gap-3 items-center">
+														<span className="hover:text-blue-400">
+															<motion.button
+																whileHover={{ scale: 1.2 }}
+																whileTap={{ scale: 0.9 }}
+																onClick={() => handleEditTask(task)}
+															>
+																<EditIcon />
+															</motion.button>
+														</span>
+														<span className="hover:text-green-500">
+															<motion.button
+																whileHover={{ scale: 1.2 }}
+																whileTap={{ scale: 0.9 }}
+																onClick={() => handleToggleTask(index)}
+															>
+																{taskStatus[index] ? (
+																	<CheckBoxIcon />
+																) : (
+																	<CheckBoxOutlineBlankIcon />
+																)}
+															</motion.button>
+														</span>
+														<span className="hover:text-rose-500">
+															<motion.button
+																whileHover={{ scale: 1.2 }}
+																whileTap={{ scale: 0.9 }}
+																onClick={() => handleDeleteTask(index, task)}
+															>
+																<DeleteIcon />
+															</motion.button>
+														</span>
+													</div>
 												</div>
 											</li>
 											<AnimatePresence
@@ -302,6 +340,20 @@ const ListModal = ({ handleClose, day, year }) => {
 									))}
 								</ul>
 							</div>
+							{tasks != "" && (<motion.button
+								onClick={() => {
+									handleOpen();
+									handleClose();
+								}}
+								variants={slideIn("up", "spring", 0, 2)}
+								initial="hidden"
+								whileInView="show"
+								whileHover={{ scale: 1.1 }}
+								whileTap={{ scale: 0.9 }}
+								className="sm:hidden block w-[200px] mt-8 sm:mt-3 rounded-xl bg-inherit border-2 border-white py-2 px-7"
+							>
+								Add another one
+							</motion.button>)}
 						</div>
 					</div>
 				</div>

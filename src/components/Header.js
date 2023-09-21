@@ -15,8 +15,8 @@ const links = [
 
 export default function Header() {
 	const location = useLocation();
-    const navigate = useNavigate();
-    const auth = useAuth();
+	const navigate = useNavigate();
+	const auth = useAuth();
 
 	const [menu, setMenu] = useState(false);
 
@@ -30,8 +30,10 @@ export default function Header() {
 				},
 			});
 
-			auth.logout(); // Use auth.logout to update the authentication state
-			navigate("/login");
+			auth.logout();
+			navigate("/login", {
+				state: { alertMessage: "Logout successful!" },
+			});
 		} catch (error) {
 			console.error("Logout failed:", error);
 		}
@@ -40,12 +42,12 @@ export default function Header() {
 	return (
 		<AnimatePresence>
 			<motion.div
-				variants={fadeIn("down", "spring", 0.5, 1)}
-				initial="hidden"
-				whileInView="show"
+				// variants={fadeIn("down", "spring", 0.5, 1)}
+				// initial="hidden"
+				// whileInView="show"
 				className="header flex justify-between items-center py-[10px] px-6 rounded-b-xl shadow-xl shadow-[#ca8ffe]"
 			>
-				<div className=" w-[50px] h-[50px] md:w-20 md:h-20">
+				<div className="w-[50px] h-[50px] md:w-20 md:h-20">
 					<motion.img
 						src={process.env.PUBLIC_URL + "/logo.png"}
 						alt=""
@@ -119,14 +121,13 @@ export default function Header() {
 					>
 						<CloseIcon />
 					</div>
-					<div className="flex flex-col ml-7 mt-[100px] justify-center flex-1 gap-[50px]">
+					<div className="flex flex-col ml-7 mt-[100px] justify-center flex-1 gap-[50px] text-white">
 						{links.map((link, index) => (
 							<NavLink to={`/${link.href}`}>
 								<motion.p
 									variants={slideIn("right", "spring", 0.05 * index, 1)}
 									initial="hidden"
 									whileInView="show"
-									whileHover={{ scale: 1.1, color: "#fff" }}
 									whileTap={{ scale: 0.9 }}
 									onClick={() => setMenu(false)}
 									key={index}
@@ -135,6 +136,60 @@ export default function Header() {
 								</motion.p>
 							</NavLink>
 						))}
+						{!auth.user ? (
+							<div className="mt-[50px] flex flex-col justify-between gap-10 text-white">
+								<motion.p
+									variants={slideIn("right", "spring", 0.4, 1)}
+									initial="hidden"
+									whileInView="show"
+									whileTap={{ scale: 0.9 }}
+									onClick={() => setMenu(false)}
+								>
+									<NavLink
+										to="/login"
+										className={`text-[16px] md:text-[20px] hover:scale-110 transition-transform duration-300 hover:text-[#fff] ${
+											location.pathname === "/login" ? "text-[#fff]" : ""
+										}`}
+									>
+										Log In
+									</NavLink>
+								</motion.p>
+								<motion.p
+									variants={slideIn("right", "spring", 0.45, 1)}
+									initial="hidden"
+									whileInView="show"
+									whileTap={{ scale: 0.9 }}
+									onClick={() => setMenu(false)}
+								>
+									<NavLink
+										to="/register"
+										className={`text-[16px] md:text-[20px] hover:scale-110 transition-transform duration-300 hover:text-[#fff] ${
+											location.pathname === "/register" ? "text-[#fff]" : ""
+										}`}
+									>
+										Register
+									</NavLink>
+								</motion.p>
+							</div>
+						) : (
+							<div className="mt-[50px]">
+								<motion.p
+									variants={slideIn("right", "spring", 0.5, 1)}
+									initial="hidden"
+									whileInView="show"
+									whileTap={{ scale: 0.9 }}
+									className={`text-[16px] md:text-[20px] cursor-pointer text-white ${
+										location.pathname === "/logout" && "text-[#fff]"
+									}`}
+									onClick={() => {
+										setMenu(false);
+										handleLogout();
+									}}
+								>
+									Log Out
+								</motion.p>
+							</div>
+						)}
 					</div>
 				</motion.div>
 			</motion.div>

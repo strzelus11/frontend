@@ -5,8 +5,8 @@ import { fadeIn, slideIn } from "../utils/motion";
 import { useNavigate } from "react-router-dom";
 
 const Register = () => {
-    const navigate = useNavigate();
-    const [registerError, setRegisterError] = useState("")
+	const navigate = useNavigate();
+	const [registerError, setRegisterError] = useState("");
 
 	const [formData, setFormData] = useState({
 		username: "",
@@ -77,8 +77,8 @@ const Register = () => {
 	};
 
 	const handleRegister = async (e) => {
-        e.preventDefault();
-        setRegisterError("");
+		e.preventDefault();
+		setRegisterError("");
 
 		try {
 			const response = await fetch("/api/register", {
@@ -95,30 +95,43 @@ const Register = () => {
 			});
 
 			if (response.ok) {
-                console.log("Registration successful");
-                navigate("/login");
+				console.log("Registration successful");
+				navigate("/login", {
+					state: { alertMessage: "Registration successful!" },
+				});
 			} else {
-                const errorData = await response.json();
-                setRegisterError(
-					errorData.error || "Registration failed. Please check your credentials."
-				);
+				const errorData = await response.json();
+				console.log(errorData);
+				if (errorData.error === "Username already exists") {
+					setRegisterError("Error: This username is already in use.");
+				}
+				if (errorData.errors) {
+					if (errorData.errors.email) {
+						setRegisterError("User with this email already exists.");
+					} else if (errorData.errors.username) {
+						setRegisterError("Error: Username already exists");
+					} else if (errorData.errors.password) {
+						setRegisterError("Passwords do not match");
+					} else if (errorData.errors.non_field_errors) {
+						setRegisterError(errorData.errors.non_field_errors.join(", "));
+					}
+				}
 			}
 		} catch (error) {
 			console.error("Register error:", error);
-			setRegisterError("An error occurred during register.");
 		}
 	};
 
 	return (
 		<div className="flex justify-center items-center">
-			<div className="flex justify-center items-center h-[60vh] cta w-[500px] rounded-3xl m-10">
+			<div className="flex justify-center items-center h-[60vh] cta w-[400px] rounded-3xl m-5 sm:m-10 shadow-xl shadow-[#a540ff] px">
 				<form
-					className="flex flex-col justify-between items-center gap-10"
+					className="flex flex-col justify-between items-center gap-6 sm:gap-8"
 					onSubmit={handleRegister}
 				>
 					<div className="flex flex-col items-center relative">
 						<motion.input
-							className={`rounded-xl p-2 w-[300px] border-2 cta text-white
+							className={`rounded-xl p-2 w-[230px] sm:w-[300px] border-2 cta text-white
                                 ${
 																	formData.errorMessage &&
 																	formData.errorMessage.username
@@ -139,7 +152,7 @@ const Register = () => {
 						<AnimatePresence>
 							{formData.errorMessage.username !== "" && (
 								<motion.span
-									className="text-rose-600 text-sm absolute top-[45px] left-1 whitespace-nowrap"
+									className="text-rose-600 text-[10px] sm:text-sm absolute top-[45px] left-1 whitespace-nowrap"
 									initial={{
 										y: "100%",
 										opacity: 0,
@@ -168,7 +181,7 @@ const Register = () => {
 					</div>
 					<div className="flex flex-col items-center gap-2 relative">
 						<motion.input
-							className={`rounded-xl p-2 w-[300px] border-2 cta text-white ${
+							className={`rounded-xl p-2 w-[230px] sm:w-[300px] border-2 cta text-white ${
 								formData.errorMessage && formData.errorMessage.email
 									? "border-rose-600"
 									: validated.email === true
@@ -187,7 +200,7 @@ const Register = () => {
 						<AnimatePresence>
 							{formData.errorMessage.email !== "" && (
 								<motion.span
-									className="text-rose-600 text-sm absolute top-[45px] left-1 whitespace-nowrap"
+									className="text-rose-600 text-[10px] sm:text-sm absolute top-[45px] left-1 whitespace-nowrap"
 									initial={{
 										y: "100%",
 										opacity: 0,
@@ -216,7 +229,7 @@ const Register = () => {
 					</div>
 					<div className="flex flex-col items-center gap-2 relative">
 						<motion.input
-							className={`rounded-xl p-2 w-[300px] border-2 cta text-white
+							className={`rounded-xl p-2 w-[230px] sm:w-[300px] border-2 cta text-white
                                 ${
 																	formData.errorMessage &&
 																	formData.errorMessage.password
@@ -237,7 +250,7 @@ const Register = () => {
 						<AnimatePresence>
 							{formData.errorMessage.password !== "" && (
 								<motion.span
-									className="text-rose-600 text-sm absolute top-[45px] left-1 whitespace-nowrap"
+									className="text-rose-600 text-[10px] sm:text-sm absolute top-[45px] left-1 whitespace-nowrap"
 									initial={{
 										y: "100%",
 										opacity: 0,
@@ -266,7 +279,7 @@ const Register = () => {
 					</div>
 					<div className="flex flex-col items-center gap-2 relative">
 						<motion.input
-							className={`rounded-xl p-2 w-[300px] border-2 cta text-white
+							className={`rounded-xl p-2 w-[230px] sm:w-[300px] border-2 cta text-white
                                 ${
 																	formData.errorMessage &&
 																	formData.errorMessage.password2
@@ -287,7 +300,7 @@ const Register = () => {
 						<AnimatePresence>
 							{formData.errorMessage.password2 !== "" && (
 								<motion.span
-									className="text-rose-600 text-sm absolute top-[45px] left-1 whitespace-nowrap"
+									className="text-rose-600 text-[10px] sm:text-sm absolute top-[45px] left-1 whitespace-nowrap"
 									initial={{
 										y: "100%",
 										opacity: 0,
@@ -320,7 +333,7 @@ const Register = () => {
 						whileInView="show"
 						whileHover={{ scale: 1.1 }}
 						whileTap={{ scale: 0.9 }}
-						className="button w-[200px] border-none rounded-xl p-3"
+						className="button w-[120px] sm:w-[200px] border-none rounded-xl sm:mt-0 mt-5 p-3"
 					>
 						Register
 					</motion.button>
@@ -330,7 +343,7 @@ const Register = () => {
 								variants={slideIn("up", "spring", 0, 2)}
 								initial="hidden"
 								whileInView="show"
-								className="absolute top-[630px] text-rose-600 text-sm"
+								className="absolute top-[650px] text-rose-600 text-sm"
 							>
 								{registerError}
 							</motion.p>

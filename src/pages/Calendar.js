@@ -142,7 +142,7 @@ const Calendar = () => {
 				variants={slideIn("top", "spring", 0.5, 2)}
 				initial="hidden"
 				whileInView="show"
-				className="cursor-pointer absolute msm:top-[125px] sm:top-[135px] msm:left-[100px] sm:left-[120px] md:left-[220px] lg:left-[320px]"
+				className="cursor-pointer absolute msm:top-[125px] sm:top-[135px] msm:left-[40px] sm:left-[120px] md:left-[220px] lg:left-[320px]"
 				onClick={() => {
 					handleReload();
 					handlePrevMonth();
@@ -164,7 +164,7 @@ const Calendar = () => {
 				variants={slideIn("top", "spring", 0.5, 2)}
 				initial="hidden"
 				whileInView="show"
-				className="cursor-pointer absolute msm:top-[125px] sm:top-[135px] msm:right-[100px] sm:right-[120px] md:right-[220px] lg:right-[320px]"
+				className="cursor-pointer absolute msm:top-[125px] sm:top-[135px] msm:right-[40px] sm:right-[120px] md:right-[220px] lg:right-[320px]"
 				onClick={() => {
 					handleReload();
 					handleNextMonth();
@@ -204,21 +204,29 @@ const Calendar = () => {
 									? "tiles rounded border-2 border-[#999]"
 									: "bg-[#b995d890] rounded"
 							}${
-								parseInt(day.date) === currentDate.getDate() &&
-								day.month === currentDate.getMonth() &&
-								day.year === currentDate.getFullYear()
-									? "bg-[#ffbc9f] border-2 sm:border-4 border-green-600"
-									: ""
-							}${
 								day.day === "Saturday"
 									? "border-2 sm:border-4 border-[#f68657]"
 									: day.day === "Sunday"
 									? "border-2 sm:border-4 border-[#f68657]"
 									: ""
-							}  msm:p-1 sm:p-2 md:p-3 lg:p-4 msm:h-[60px] sm:h-[70px] md:h-[80px] lg:h-[100px] hover:border-[#f68657]`}
+							}  msm:p-1 sm:p-2 md:p-3 lg:p-4 msm:h-[40px] sm:h-[70px] md:h-[80px] lg:h-[100px] hover:border-[#f68657] ${
+								parseInt(day.date) === currentDate.getDate() &&
+								day.month === currentDate.getMonth() &&
+								day.year === currentDate.getFullYear()
+									? "border-2 sm:border-4 border-green-600"
+									: ""
+							}`}
 						>
 							<div className="flex flex-row justify-between items-center">
-								<p className="msm:text-[10px] sm:text-[12px] md:text-[14px] lg:text-[16px]">
+								<p
+									className={`msm:text-[10px] sm:text-[12px] md:text-[14px] lg:text-[16px]${
+										parseInt(day.date) === currentDate.getDate() &&
+										day.month === currentDate.getMonth() &&
+										day.year === currentDate.getFullYear()
+											? "border-4 border-white rounded-full"
+											: ""
+									}`}
+								>
 									{day.day ? `${day.date}` : ""}
 								</p>
 								{day.day && hoveredIndex === index && (
@@ -267,13 +275,16 @@ const Calendar = () => {
 					onExitComplete={() => null}
 				>
 					{listModalOpen &&
-						(auth.isAuthenticated ? (
+                        (auth.isAuthenticated ? (
 							<ListModal
 								day={day}
 								year={currentYear}
 								listModalOpen={listModalOpen}
 								handleClose={() => {
 									setListModalOpen(false);
+								}}
+								handleOpen={() => {
+									setAddModalOpen(true);
 								}}
 							/>
 						) : (

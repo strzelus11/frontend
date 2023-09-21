@@ -7,8 +7,11 @@ import Stats from "./pages/Stats";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
 import "./App.css";
+import { useAuth } from "./utils/AuthContext";
+import LogInModal from "./components/LogInModal";
 
 function App() {
+    const auth = useAuth();
 	return (
 		<Router>
 			<div className="z-10 fixed top-0 w-full">
@@ -22,7 +25,8 @@ function App() {
 					<Route path="/register" element={<Register />} />
 					<Route path="/login" element={<Login />} />
 				</Routes>
-			</div>
+            </div>
+            {/* <div>{!auth.user && (<LogInModal />)}</div> */}
 		</Router>
 	);
 }

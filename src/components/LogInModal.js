@@ -14,25 +14,27 @@ const LogInModal = ({ handleClose }) => {
 		<Backdrop onClick={handleClose}>
 			<motion.div
 				onClick={(e) => e.stopPropagation()}
-				className="modal header text-white"
+				className="fixed border-none rounded-xl p-10 w-[300px] h-[500px] sm:w-[700px] sm:h-[650px] header text-white"
 				variants={dropIn}
 				initial="hidden"
 				animate="visible"
 				exit="exit"
 			>
 				<CloseIcon
-					className="absolute top-8 left-8 cursor-pointer"
+					className="absolute top-5 left-5 sm:top-8 sm:left-8 cursor-pointer"
 					onClick={handleClose}
 				/>
-				<div className="sm:mt-0 my-[50px] text-center">
-					<p className="sm:text-[40px] text-[30px] font-semibold mb-8">User not authenticated</p>
+				<div className="mt-5 my-[50px] text-center">
+					<p className="sm:text-[40px] text-[28px] text-center font-semibold mb-8">
+						User not authenticated
+					</p>
 					<div className="flex flex-col justify-between items-center h-full">
 						<div className="flex flex-col items-center gap-5">
-							<div className="cta rounded-3xl flex  flex-col justify-center items-center gap-7 p-10 w-[600px] h-[300px] shadow-xl shadow-[#a540ff]">
-								<p className="sm:text-[30px] text-[20px] font-semibold mb-8">
+							<div className="sm:mt-10 cta rounded-3xl flex  flex-col justify-center items-center gap-7 p-10 w-[220px] sm:w-[600px] sm:h-[300px] shadow-xl shadow-[#a540ff]">
+								<p className="sm:text-[30px] text-[18px] font-semibold sm:mb-8">
 									Please Log In or Register
 								</p>
-								<div className="flex flex-row justify-between items-center gap-[80px]">
+								<div className="flex flex-col sm:flex-row justify-between items-center sm:gap-[80px]">
 									<motion.button
 										onClick={() => navigate("/login")}
 										variants={slideIn("up", "spring", 0, 2)}
